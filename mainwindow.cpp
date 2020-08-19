@@ -21,11 +21,6 @@ MainWindow::MainWindow(QWidget *parent)
     setAttribute( Qt::WA_TranslucentBackground );
     setWindowFlags(Qt::WindowStaysOnTopHint);
 
-    QRect rec = QApplication::desktop()->screenGeometry();
-    int width = rec.width();
-    int height = rec.height();
-    setFixedSize(width,height);
-
     #ifdef _WIN32
         hWnd = (HWND)this->winId();
 
@@ -47,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     //QIcon ButtonIcon(pixmap);
 
     QFont mainFont("Georgia",16,QFont::Bold);
-
+/*
     QWidget* wd = new QWidget(centralWidget());
     QPushButton *button = new QPushButton(centralWidget());
     //button->setIcon(ButtonIcon);
@@ -79,31 +74,43 @@ MainWindow::MainWindow(QWidget *parent)
             );
 
     button->raise();
-    /*
     QWidget* t = new QWidget(centralWidget());
+
+
     t->setFixedSize(width,height);
-    t->setStyleSheet("background-color: rgba(255,255,0,0.9);");
+    t->setStyleSheet("background-color: rgba(255,255,255,0.9);");
     QHBoxLayout* t2 = new QHBoxLayout;
-    t->setLayout(t2);
+    t->setLayout();
+
+    /**/
+
+    #ifdef _WIN32
+        view = new QWebEngineView();
+     #endif
+     #ifdef linux
+        view = new QWebView();
+    #endif
+    mainLayout->addWidget(view, Qt::AlignHCenter);
+
+    QRect geometry = mainLayout->geometry();
     QPushButton *button = new QPushButton();
     button->setText("J'ai compris");
     button->setCursor(Qt::PointingHandCursor);
-    button->setFixedSize(300,100);
     button->setStyleSheet(" QPushButton {background-color: transparent;"
                           "border-style: outset;"
                           "border-width: 2px;"
                           "border-color: black;"
-                          "font: bold 14px;"
+                          "font: bold 30px;"
                           "padding: 6px; }"
                           " QPushButton:hover {"
                           "     background-color: \"#0092CC\""
                           "}"
             );
     button->raise();
-    t2->addWidget(button, Qt::AlignHCenter);
+    mainLayout->addWidget(button, Qt::AlignHCenter);
 
-    button->move(50, 40);
-    */
+    button->setFixedHeight(100);
+    /**/
     connect(button, SIGNAL(clicked()), this, SLOT(OnClicked()));
 }
 
@@ -111,25 +118,17 @@ void MainWindow::launchWebView(QString src)
 {
     if (QFileInfo::exists(src))
     {
-        #ifdef _WIN32
-            QWebEngineView *view;
-            view = new QWebEngineView();
-           view->load(QUrl::fromLocalFile(QFileInfo(src).absoluteFilePath()));
-         #endif
-         #ifdef linux
-            QWebView *view;
-            view = new QWebView();
-            view->load(QUrl::fromLocalFile(QFileInfo(src).absoluteFilePath()));
-            //view->load(QUrl::fromLocalFile(QFileInfo(QCoreApplication::applicationDirPath() + "/htmlInject.html").absoluteFilePath()));
-        #endif
-
-        mainLayout->addWidget(view);
+        //view->load(QUrl::fromLocalFile(QFileInfo(QCoreApplication::applicationDirPath() + "/htmlInject.html").absoluteFilePath()));
+        view->load(QUrl::fromLocalFile(QFileInfo(src).absoluteFilePath()));
         view->lower();
     }
     else
         QCoreApplication::exit(-1);
 }
-
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    QCoreApplication::quit();
+}
 void MainWindow::OnClicked()
 {
    QCoreApplication::quit();

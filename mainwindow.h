@@ -35,6 +35,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     void launchWebView(QString src);
     ~MainWindow();
+protected:
+    void closeEvent(QCloseEvent *event) override;
 private slots:
     #ifdef _WIN32
         void hideAllWindows();
@@ -45,5 +47,11 @@ private:
     QTimer* timer;
     Ui::MainWindow *ui;
     QVBoxLayout *mainLayout;
+#ifdef _WIN32
+    QWebEngineView *view;
+#endif
+#ifdef linux
+   QWebView *view;
+#endif
 };
 #endif // MAINWINDOW_H

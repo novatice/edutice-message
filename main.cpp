@@ -1,23 +1,30 @@
 #include <QApplication>
 #include <mainwindow.h>
 #include <QDesktopWidget>
-
+#include <QScreen>
+#include <iostream>
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    MainWindow w;
+    const auto m = app.screens();
 
-    //if (argc<1) return app.exec();
+    for(int i = 0; i< m.length(); i++)
+    {
+        MainWindow* w= new MainWindow();
 
-    w.setWindowState(Qt::WindowFullScreen);
+        //if (argc<1) return app.exec();
 
-    QRect rec = QApplication::desktop()->screenGeometry();
-    int width = rec.width();
-    int height = rec.height();
-    w.setFixedSize(width,height);
-    w.show();
+        w->setWindowState(Qt::WindowFullScreen);
+        //QRect rec = m[i]->availableGeometry();
 
-    w.launchWebView(argv[1]);
+        QRect rec = QApplication::desktop()->screenGeometry(i);
+
+        w->setFixedSize(rec.width(),rec.height());
+        w->move(QPoint(rec.x(), rec.y()));
+
+        w->show();
+        w->launchWebView(argv[1]);
+    }
 
     /*
     QFile file(QCoreApplication::applicationDirPath() + "/htmlInject.html");
