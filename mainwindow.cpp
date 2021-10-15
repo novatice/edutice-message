@@ -38,51 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->setStyleSheet("background-color: rgba(255,255,255,0.9);");
 
-    //QPixmap pixmap(QCoreApplication::applicationDirPath()+"/cross.png");
-    //QIcon ButtonIcon(pixmap);
-
     QFont mainFont("Georgia",16,QFont::Bold);
-/*
-    QWidget* wd = new QWidget(centralWidget());
-    QPushButton *button = new QPushButton(centralWidget());
-    //button->setIcon(ButtonIcon);
-    button->setCursor(Qt::PointingHandCursor);
-    //button->setFixedSize(100,100);
-    button->setFixedSize(300,80);
-    //button->setIconSize(QSize(100,100));
-    button->setStyleSheet(" QPushButton {background-color: transparent;"
-                          "border-style: outset;"
-                          "border-width: 1px;"
-                          "border-radius: 5px;"
-                          "border-color: rgba(0, 0,0, 0.5);"
-                          "font: bold 14px;"
-                          "padding: 6px; }"
-                          " QPushButton:hover {"
-                          "     background-color: \"#800092CC\""
-                          "}"
-                          "QPushButton{font-size: 30px;font-family: mainFont; color :rgba(0, 0,0, 0.8); opacity:0.6}"
-            );
-    button->setText("J'ai compris");
-    button->move(width/2-150, height-200);
-
-    wd->setFixedSize(button->width(),button->height());
-    wd->move(button->x(), button->y());
-    wd->setStyleSheet("QWidget { background-color : rgba(0, 0,0, 0);}"
-                      " button:hover {"
-                      "     background-color: white"
-                      "}"
-            );
-
-    button->raise();
-    QWidget* t = new QWidget(centralWidget());
-
-
-    t->setFixedSize(width,height);
-    t->setStyleSheet("background-color: rgba(255,255,255,0.9);");
-    QHBoxLayout* t2 = new QHBoxLayout;
-    t->setLayout();
-
-    /**/
 
     #ifdef _WIN32
         view = new QWebEngineView();
@@ -118,7 +74,6 @@ void MainWindow::launchWebView(QString src)
 {
     if (QFileInfo::exists(src))
     {
-        //view->load(QUrl::fromLocalFile(QFileInfo(QCoreApplication::applicationDirPath() + "/htmlInject.html").absoluteFilePath()));
         view->load(QUrl::fromLocalFile(QFileInfo(src).absoluteFilePath()));
         view->lower();
     }

@@ -12,10 +12,7 @@ int main(int argc, char *argv[])
     {
         MainWindow* w= new MainWindow();
 
-        //if (argc<1) return app.exec();
-
         w->setWindowState(Qt::WindowFullScreen);
-        //QRect rec = m[i]->availableGeometry();
 
         QRect rec = QApplication::desktop()->screenGeometry(i);
 
@@ -25,19 +22,6 @@ int main(int argc, char *argv[])
         w->show();
         w->launchWebView(argv[1]);
     }
-
-    /*
-    QFile file(QCoreApplication::applicationDirPath() + "/htmlInject.html");
-       if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-           return -2;
-    QTextStream in(&file);
-    QString html;
-    html = in.readAll();
-    file.close();
-
-    QString afl = QCoreApplication::applicationDirPath() + "/htmlInject.html";
-    std::cout << afl.toStdString() << std::endl;
-    */
 
     return app.exec();
 }

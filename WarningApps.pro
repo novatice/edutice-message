@@ -1,6 +1,6 @@
 
 linux-g++ {
-    QT       += webkitwidgets
+    QT += webkitwidgets
 }
 win32 {
     QT += webenginewidgets
