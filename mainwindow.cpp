@@ -34,8 +34,6 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(new QWidget);
     centralWidget()->setLayout(mainLayout);
 
-
-
     this->setStyleSheet("background-color: rgba(255,255,255,0.9);");
 
     QFont mainFont("Georgia",16,QFont::Bold);
@@ -48,7 +46,6 @@ MainWindow::MainWindow(QWidget *parent)
     #endif
     mainLayout->addWidget(view, Qt::AlignHCenter);
 
-    QRect geometry = mainLayout->geometry();
     QPushButton *button = new QPushButton();
     button->setText("J'ai compris");
     button->setCursor(Qt::PointingHandCursor);
@@ -66,19 +63,19 @@ MainWindow::MainWindow(QWidget *parent)
     mainLayout->addWidget(button, Qt::AlignHCenter);
 
     button->setFixedHeight(100);
-    /**/
+
     connect(button, SIGNAL(clicked()), this, SLOT(OnClicked()));
 }
 
 void MainWindow::launchWebView(QString src)
 {
     if (QFileInfo::exists(src))
-    {
         view->load(QUrl::fromLocalFile(QFileInfo(src).absoluteFilePath()));
-        view->lower();
-    }
     else
-        QCoreApplication::exit(-1);
+        view->load(QUrl(src));
+
+    view->lower(); // Lowers the widget to the bottom of the parent widget's stack.
+
 }
 void MainWindow::closeEvent(QCloseEvent *event)
 {
