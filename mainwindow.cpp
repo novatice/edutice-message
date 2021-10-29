@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QPushButton *button = new QPushButton();
     button->setObjectName("confirmButton");
-    button->setText("J'ai compris");
+    button->setText("Fermer");
     button->setCursor(Qt::PointingHandCursor);
 
     button->raise();
