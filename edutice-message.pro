@@ -1,5 +1,3 @@
-
-
 QT += webenginewidgets
 
 CONFIG += c++11
