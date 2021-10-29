@@ -34,31 +34,32 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(new QWidget);
     centralWidget()->setLayout(mainLayout);
 
-    this->setStyleSheet("background-color: rgba(255,255,255,0.9);");
 
     QFont mainFont("Georgia",16,QFont::Bold);
 
     view = new QWebEngineView();
 
+    // disable context menu in view
+    view->setContextMenuPolicy(Qt::NoContextMenu);
+
     mainLayout->addWidget(view, Qt::AlignHCenter);
 
+    QWidget *bottomWidget = new QWidget();
+    bottomWidget->setObjectName("bottom");
+
+    QHBoxLayout *bottomLayout = new QHBoxLayout();
+    bottomWidget->setLayout(bottomLayout);
+
+    mainLayout->addWidget(bottomWidget);
+
+
     QPushButton *button = new QPushButton();
+    button->setObjectName("confirmButton");
     button->setText("J'ai compris");
     button->setCursor(Qt::PointingHandCursor);
-    button->setStyleSheet(" QPushButton {background-color: transparent;"
-                          "border-style: outset;"
-                          "border-width: 2px;"
-                          "border-color: black;"
-                          "font: bold 30px;"
-                          "padding: 6px; }"
-                          " QPushButton:hover {"
-                          "     background-color: \"#0092CC\""
-                          "}"
-            );
-    button->raise();
-    mainLayout->addWidget(button, Qt::AlignHCenter);
 
-    button->setFixedHeight(100);
+    button->raise();
+    bottomLayout->addWidget(button, 0, Qt::AlignHCenter);
 
     connect(button, SIGNAL(clicked()), this, SLOT(OnClicked()));
 }

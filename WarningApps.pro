@@ -22,6 +22,9 @@ SOURCES += \
 HEADERS += \
     mainwindow.h
 
+RESOURCES += \
+    stylesheet.qss
+
 FORMS +=
 
 win32:LIBS += -luser32

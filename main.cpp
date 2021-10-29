@@ -23,6 +23,12 @@ int main(int argc, char *argv[])
         w->launchWebView(argv[1]);
     }
 
+    QFile file(":/stylesheet.qss");
+    file.open(QFile::ReadOnly);
+    QString styleSheet = QString(file.readAll());
+
+    app.setStyleSheet(styleSheet);
+
     return app.exec();
 }
 

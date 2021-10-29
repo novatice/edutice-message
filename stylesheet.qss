@@ -1,0 +1,19 @@
+QWidget {
+    background-color: whitesmoke;
+}
+
+QPushButton#confirmButton {
+    background-color: #0092CC;
+    border: none;
+    border-radius: 5px;
+    font: bold 30px;
+    color: white;
+    height: 1.5em;
+    width: 10em;
+
+}
+
+QPushButton#confirmButton:pressed {
+    background-color: white;
+    color: #0092CC;
+}
