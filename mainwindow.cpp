@@ -38,12 +38,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     QFont mainFont("Georgia",16,QFont::Bold);
 
-    #ifdef _WIN32
-        view = new QWebEngineView();
-     #endif
-     #ifdef linux
-        view = new QWebView();
-    #endif
+    view = new QWebEngineView();
+
     mainLayout->addWidget(view, Qt::AlignHCenter);
 
     QPushButton *button = new QPushButton();

@@ -7,13 +7,10 @@
 #include <process.h>
 #include <winbase.h>
 #include <Tlhelp32.h>
+
+#endif
+
 #include <QWebEngineView>
-#endif
-
-#ifdef linux
-    #include <QWebView>
-#endif
-
 #include <QMainWindow>
 #include <QPushButton>
 #include <QBoxLayout>
@@ -47,11 +44,8 @@ private:
     QTimer* timer;
     Ui::MainWindow *ui;
     QVBoxLayout *mainLayout;
-#ifdef _WIN32
+
     QWebEngineView *view;
-#endif
-#ifdef linux
-   QWebView *view;
-#endif
+
 };
 #endif // MAINWINDOW_H

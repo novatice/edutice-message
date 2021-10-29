@@ -1,10 +1,7 @@
 
-linux-g++ {
-    QT += webkitwidgets
-}
-win32 {
-    QT += webenginewidgets
-}
+
+QT += webenginewidgets
+
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
