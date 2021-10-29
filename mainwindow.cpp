@@ -74,14 +74,22 @@ void MainWindow::launchWebView(QString src)
     view->lower(); // Lowers the widget to the bottom of the parent widget's stack.
 
 }
+
+void dispose(QWebEngineView *view) {
+    delete view;
+    QCoreApplication::quit();
+}
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    QCoreApplication::quit();
+    dispose(view);
 }
 void MainWindow::OnClicked()
 {
-   QCoreApplication::quit();
+   dispose(view);
 }
+
+
 
 MainWindow::~MainWindow()
 {
