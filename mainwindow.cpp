@@ -8,7 +8,7 @@
 void hideAllWindows();
 void showAllWindows();
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(bool withoutCloseBtn, QWidget *parent)
     : QMainWindow(parent)
 {
     #ifdef _WIN32
@@ -52,16 +52,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     mainLayout->addWidget(bottomWidget);
 
+    if(!withoutCloseBtn) {
+        QPushButton *button = new QPushButton();
+        button->setObjectName("confirmButton");
+        button->setText("Fermer");
+        button->setCursor(Qt::PointingHandCursor);
 
-    QPushButton *button = new QPushButton();
-    button->setObjectName("confirmButton");
-    button->setText("Fermer");
-    button->setCursor(Qt::PointingHandCursor);
+        button->raise();
+        bottomLayout->addWidget(button, 0, Qt::AlignHCenter);
 
-    button->raise();
-    bottomLayout->addWidget(button, 0, Qt::AlignHCenter);
+        connect(button, SIGNAL(clicked()), this, SLOT(OnClicked()));
+    }
 
-    connect(button, SIGNAL(clicked()), this, SLOT(OnClicked()));
+
 }
 
 void MainWindow::launchWebView(QString src)

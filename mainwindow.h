@@ -29,7 +29,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(bool withoutCloseBtn = false, QWidget *parent = nullptr);
     void launchWebView(QString src);
     ~MainWindow();
 protected:
