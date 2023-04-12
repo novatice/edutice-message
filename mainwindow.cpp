@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "qevent.h"
 #include <QTabWidget>
 #ifdef _WIN32
     HWND hWnd;
@@ -57,11 +58,12 @@ MainWindow::MainWindow(QWidget *parent)
     button->setObjectName("confirmButton");
     button->setText("Fermer");
     button->setCursor(Qt::PointingHandCursor);
-
+    this->installEventFilter(this);
     button->raise();
     bottomLayout->addWidget(button, 0, Qt::AlignHCenter);
 
     connect(button, SIGNAL(clicked()), this, SLOT(OnClicked()));
+
 }
 
 void MainWindow::launchWebView(QString src)
@@ -89,6 +91,21 @@ void MainWindow::OnClicked()
    dispose(view);
 }
 
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+    if(event->type()==QEvent::KeyPress){
+        QKeyEvent * keyEvent=(QKeyEvent*)(event);
+        switch(keyEvent->key()){
+        case Qt::Key_Return:
+        case Qt::Key_Escape:
+            close();
+        default:
+            break;
+        }
+    }
+    return QObject::eventFilter(watched,event);
+
+}
 
 
 MainWindow::~MainWindow()
