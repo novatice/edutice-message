@@ -29,7 +29,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+
     MainWindow(bool withoutCloseBtn = false, QWidget *parent = nullptr);
+    bool eventFilter(QObject *watched, QEvent *event) override;
+    MainWindow(QWidget *parent = nullptr);
     void launchWebView(QString src);
     ~MainWindow();
 protected:
@@ -40,7 +43,6 @@ private slots:
     #endif
     void OnClicked();
 private:
-
     QTimer* timer;
     Ui::MainWindow *ui;
     QVBoxLayout *mainLayout;
