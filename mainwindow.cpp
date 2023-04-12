@@ -93,7 +93,8 @@ void MainWindow::OnClicked()
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
-    if(event->type()==QEvent::KeyPress){
+    //We use ShortcutOverride instead of Keypressed otherwise escapse won't work
+    if(event->type()==QEvent::ShortcutOverride){
         QKeyEvent * keyEvent=(QKeyEvent*)(event);
         switch(keyEvent->key()){
         case Qt::Key_Return:
