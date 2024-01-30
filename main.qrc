@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/AvenirFonts/AvenirFont.qml</file>
+        <file>qml/AvenirFonts/AvenirFonts.qml</file>
+        <file>qml/AvenirFonts/qmldir</file>
+        <file>qml/NeosButton.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/Spacer.qml</file>
+        <file>fonts/avenir_next_lt_pro_it.otf</file>
+        <file>fonts/avenir_next_lt_pro_regular.otf</file>
+        <file>fonts/avenir_next_lt_pro_bold.otf</file>
+    </qresource>
+</RCC>

@@ -1,6 +1,6 @@
 QT += webenginewidgets
 
-CONFIG += c++11
+CONFIG += c++11 use_lld_linker
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -13,17 +13,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += \
-    main.cpp \
-    mainwindow.cpp
+# Make Qt Creator aware of where the QML modules live
+_QML_IMPORT_PATHS = "qml/"
 
-HEADERS += \
-    mainwindow.h
+QML_IMPORT_PATH += $$_QML_IMPORT_PATHS
+
+
+SOURCES += \
+    main.cpp
+
+HEADERS +=
 
 RESOURCES += \
-    stylesheet.qss
+    main.qrc
 
 FORMS +=
+
 
 win32:LIBS += -luser32
 # Default rules for deployment.
