@@ -8,8 +8,7 @@ NeosButton {
 
     contentItem: Text {
         text: root.text
-        font.family: AvenirFonts.regular.name
-        font.pointSize: 12
+        font: AvenirFonts.regular.deriveFont(16)
         padding: 5
         color: "white"
     }

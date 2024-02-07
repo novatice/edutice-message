@@ -13,8 +13,10 @@ Dialog {
     property bool withCancelButton: false
 
     parent: Overlay.overlay
-    x: (parent.width - this.implicitWidth) / 2
+    x: (parent.width - this.width) / 2
     y: parent.height / 2 - this.height / 2
+
+    width: parent.width / 4
 
     id: root
     modal: true
@@ -22,51 +24,47 @@ Dialog {
     // signal onAccepted
     signal canceled
 
-    FontLoader {
-        id: loader
-        source: "qrc:/fonts/avenir_next_lt_pro_bold.otf"
-    }
-
     background: Rectangle {
         border.color: "transparent"
         radius: 5
+        anchors.fill: parent
     }
 
     header: Label {
         text: root.title
         horizontalAlignment: Qt.AlignHCenter
 
-        font: AvenirFonts.bold.deriveFont(48)
+        font: AvenirFonts.bold.deriveFont(38)
         padding: 12
         color: "#3b78bc"
     }
 
     contentItem: ColumnLayout {
+        width: parent.width
+        height: parent.height
 
         id: column
-        spacing: 20
+        spacing: 10
 
         RowLayout {
+            Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
 
             Label {
                 id: contentLabel
-                font: AvenirFonts.regular.font
+                Layout.fillWidth: true
+                font: AvenirFonts.regular.deriveFont(16)
                 wrapMode: "WordWrap"
-                Layout.columnSpan: 2
-                Layout.alignment: Qt.AlignRight
-                Layout.minimumWidth: root.parent.width / 8
-                Layout.maximumWidth: root.parent.width / 4
                 horizontalAlignment: Qt.AlignCenter
             }
         }
 
         RowLayout {
-
+            Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
             spacing: 30
 
-            KioskDialogButton {
+            NeosDialogButton {
                 id: cancelBtn
                 text: "Annuler"
                 onClicked: {
@@ -76,7 +74,7 @@ Dialog {
                 visible: withCancelButton
             }
 
-            KioskDialogButton {
+            NeosDialogButton {
                 id: acceptBtn
                 text: "Ok"
                 onClicked: {

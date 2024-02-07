@@ -5,11 +5,12 @@ import AvenirFonts 1.0
 
 Button {
     property bool disabled: false
+    property string color: "#0092CC"
     property string tooltip
 
     id: root
     background: Rectangle {
-        color: root.disabled ? "gray" : "#0092CC"
+        color: root.disabled ? "gray" : root.color
         radius: 5
         border.color: root.pressed ? "white" : "transparent"
     }

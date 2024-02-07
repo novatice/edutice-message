@@ -1,150 +1,66 @@
+#include "application.h"
+#include "options.h"
 #include "qdebug.h"
-#include <QApplication>
 #include <QCommandLineParser>
-#include <QDesktopWidget>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QScreen>
+#include <QtWebEngine/QtWebEngine>
 #include <iostream>
 
-#ifdef _WIN32
-#include "qtimer.h"
-#include <Tlhelp32.h>
-#include <process.h>
-#include <winbase.h>
-#include <windows.h>
-#endif
-
-#ifdef _WIN32
-
-HWND hWnd;
-LPSTR strTitle;
-
-void hideAllWindows() {
-  if (GetForegroundWindow() != hWnd) {
-
-    /*
-HWND hwndW = GetNextWindow(hWnd, GW_HWNDNEXT);
-
-    if (hwndW != NULL)
-    {
-        LPSTR str;
-
-        GetWindowTextA(hwndW,str,15);
-
-        if (str == strTitle)
-        {
-            return;
-        }
-    }
-
-    for (HWND hwndW = GetTopWindow(NULL); hwndW != NULL; hwndW =
-                                                         GetNextWindow(hwndW,
-GW_HWNDNEXT))
-    {
-        if (hwndW == hWnd)
-            continue;
-        /*
-    if (!IsWindowVisible(hwndW))
-        continue;
-
-        int length = GetWindowTextLength(hwndW);
-        if (length == 0)
-            continue;
-
-        ShowWindow(hwndW, SW_HIDE);
-    }
-
-    //*/
-    SetForegroundWindow(hWnd);
-  }
-  ShowWindow(hWnd, SW_SHOWMAXIMIZED);
-}
-
-void showAllWindows() {
-  for (HWND hwndW = GetTopWindow(NULL); hwndW != NULL;
-       hwndW = GetNextWindow(hwndW, GW_HWNDNEXT)) {
-    if (!IsWindowVisible(hwndW))
-      continue;
-
-    int length = GetWindowTextLength(hwndW);
-    if (length == 0)
-      continue;
-    ShowWindow(hwndW, SW_RESTORE);
+void treatParsingResult(QCommandLineParser &parser,
+                        CommandLineParseResult result, QString *errorMessage) {
+  switch (result) {
+  case CommandLineOk:
+    break;
+  case CommandLineError:
+    std::cerr << qPrintable(*errorMessage) << std::endl;
+  case CommandLineHelpRequested:
+    parser.showHelp(-1);
   }
 }
-#endif
 
 int main(int argc, char *argv[]) {
-  QApplication app(argc, argv);
-  const auto screens = app.screens();
+  QGuiApplication qtApp(argc, argv);
+  const auto screens = qtApp.screens();
 
-  QMessageLogger logger;
+  QCommandLineParser parser;
 
-  QCommandLineParser cmdParser;
-  cmdParser.addHelpOption();
-  QCommandLineOption withoutCloseBtnOpt(
-      "without-close-button",
-      "Lancer l'application sans bouton de fermeture (l'option est ignorée si "
-      "utilisée avec le mode POLICY)");
-  cmdParser.addOption(withoutCloseBtnOpt);
+  auto helpOption = parser.addHelpOption();
 
   QCommandLineOption modeOpt(
       "mode", "Lancer l'application dans le mode spécifié (MESSAGE ou POLICY)",
       "mode");
-  cmdParser.addOption(modeOpt);
+  parser.addOption(modeOpt);
 
-  cmdParser.addPositionalArgument("url",
-                                  "L'url à charger (adresse ou fichier)");
+  parser.parse(QCoreApplication::arguments());
 
-  cmdParser.process(app);
+  auto modeIsSet = parser.isSet(modeOpt);
 
-  bool withoutCloseBtn = cmdParser.isSet(withoutCloseBtnOpt);
-
-  QStringList argsList = cmdParser.positionalArguments();
-
-  if (argsList.size() < 1) {
-    std::cerr << cmdParser.helpText().toStdString();
-    exit(1);
+  if (!modeIsSet && parser.isSet(helpOption)) {
+    parser.showHelp(0);
   }
 
-  QString url = argsList.at(0);
-  qDebug() << url;
+  auto mode = modeIsSet ? parser.value(modeOpt).toLower() : "message";
+  qDebug() << "mode: " << mode;
 
-  QQmlApplicationEngine engine;
+  QString error;
+  if (mode == "policy") {
+    PolicyModeOptions options;
+    auto result = parsePolicyModeOptions(parser, &options, &error);
 
-  engine.addImportPath("qrc:/qml/"); /* Insert relative path to your
-                                            import directory here */
+    treatParsingResult(parser, result, &error);
 
-  const QUrl qmlUrl(QStringLiteral("qrc:/qml/main.qml"));
+    return PolicyApplication(qtApp, options).execute();
+  } else if (mode == "message") {
+    MessageModeOptions options;
+    auto result = parseMessageModeOptions(parser, &options, &error);
 
-#ifdef _WIN32
-  auto timer = new QTimer();
-  QObject::connect(timer, &QTimer::timeout, [] { hideAllWindows(); });
-  timer->setInterval(500);
-#endif
+    treatParsingResult(parser, result, &error);
 
-  QObject::connect(
-      &engine, &QQmlApplicationEngine::objectCreated, &app,
-      [&qmlUrl](QObject *obj, const QUrl &objUrl) {
-        if (!obj && qmlUrl == objUrl)
-          QCoreApplication::exit(-1);
-#ifdef _WIN32
-        if (QQuickWindow *window =
-                qobject_cast<QWindow *>(engine.rootObjects().at(0)))
-          hWnd = window->winId();
-
-        timer->start();
-#endif
-      },
-      Qt::QueuedConnection);
-  engine.rootContext()->setContextProperty("urlToLoad", url);
-  engine.rootContext()->setContextProperty("withoutCloseButton",
-                                           withoutCloseBtn);
-
-  logger.debug() << "just before start";
-
-  engine.load(qmlUrl);
-
-  return app.exec();
+    return MessageApplication(qtApp, options).execute();
+  } else {
+    // qFatal("Unknown mode: %s", mode.toStdString().c_str());
+    parser.showHelp(-1);
+  }
 }
