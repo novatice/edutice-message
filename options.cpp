@@ -55,6 +55,10 @@ CommandLineParseResult parsePolicyModeOptions(QCommandLineParser &parser,
                                  "duration", "600");
   parser.addOption(durationOpt);
 
+  QCommandLineOption agreementIdOpt("agreementId", "The agreement id",
+                                    "agreementdId");
+  parser.addOption(agreementIdOpt);
+
   parser.addPositionalArgument("url", "The url to load (address or file)");
 
   if (!parser.parse(QCoreApplication::arguments())) {
@@ -94,6 +98,13 @@ CommandLineParseResult parsePolicyModeOptions(QCommandLineParser &parser,
   }
 
   options->user = parser.value(userOpt);
+
+  if (!parser.isSet(agreementIdOpt)) {
+    *errorMessage = "Missing agreementId option";
+    return CommandLineError;
+  }
+
+  options->agreementId = parser.value(agreementIdOpt);
 
   options->duration = parser.value(durationOpt).toInt();
 

@@ -64,7 +64,7 @@ class PolicyApplication : public Application<PolicyModeOptions> {
 public:
   explicit PolicyApplication(QGuiApplication &app, PolicyModeOptions options)
       : Application(app, "qrc:/qml/policy.qml", options),
-        m_policyAgreement{options.user, options.policyId} {
+        m_policyAgreement{options.user, options.policyId, options.agreementId} {
 
     auto &engine = getEngine();
 

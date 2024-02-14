@@ -9,6 +9,7 @@ struct Agreement {
   bool success;
   int policyId;
   QString username;
+  QString agreementId;
 
   QString asJson();
 };
@@ -16,7 +17,8 @@ struct Agreement {
 class PolicyAgreement : public QObject {
   Q_OBJECT
 public:
-  PolicyAgreement(QString username, int policyId, QObject *parent = nullptr);
+  PolicyAgreement(QString username, int policyId, QString agreementId,
+                  QObject *parent = nullptr);
   Q_INVOKABLE void agree();
   Q_INVOKABLE void disagree();
   Q_PROPERTY(bool isRunning MEMBER m_isRunning NOTIFY isRunningChanged);
@@ -36,6 +38,7 @@ private:
   bool m_isRunning{false};
   int m_policyId;
   QString m_username;
+  QString m_agreementId;
 };
 
 #endif // POLICYAGREEMENT_H
