@@ -6,6 +6,7 @@
 #include "qguiapplication.h"
 #include "qqmlapplicationengine.h"
 #include "qqmlcontext.h"
+#include "qquickwindow.h"
 #include "qtwebengineglobal.h"
 
 template <class T> class Application {
@@ -26,6 +27,10 @@ public:
         [this](QObject *obj, const QUrl &objUrl) {
           if (!obj && m_qmlUrl == objUrl)
             QCoreApplication::exit(-1);
+
+          QQuickWindow *window =
+              qobject_cast<QQuickWindow *>(m_engine.rootObjects().at(0));
+          window->showFullScreen();
         },
         Qt::QueuedConnection);
   };
