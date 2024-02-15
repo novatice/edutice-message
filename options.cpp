@@ -45,10 +45,6 @@ CommandLineParseResult parsePolicyModeOptions(QCommandLineParser &parser,
   QCommandLineOption userOpt("user", "The user accepting the policy", "user");
   parser.addOption(userOpt);
 
-  QCommandLineOption policyIdOpt("policyId", "The id of the policy to accept",
-                                 "policyId");
-  parser.addOption(policyIdOpt);
-
   QCommandLineOption durationOpt("duration",
                                  "The numbr of seconds during which the policy "
                                  "can be accepted (default is 600)",
@@ -74,23 +70,6 @@ CommandLineParseResult parsePolicyModeOptions(QCommandLineParser &parser,
   }
 
   options->url = argsList.at(0);
-
-  if (!parser.isSet(policyIdOpt)) {
-    *errorMessage = "Missing policyId option";
-    return CommandLineError;
-  }
-
-  auto policyIdValue = parser.value(policyIdOpt);
-
-  bool isPolicyIdInt = false;
-  auto policyId = policyIdValue.toInt(&isPolicyIdInt);
-
-  if (!isPolicyIdInt) {
-    *errorMessage = "policyId should be an integer";
-    return CommandLineError;
-  }
-
-  options->policyId = policyId;
 
   if (!parser.isSet(userOpt)) {
     *errorMessage = "Missing user option";
