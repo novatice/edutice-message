@@ -12,8 +12,8 @@ Window {
     width: Screen.width
     height: Screen.height
     visible: true
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
 
+    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
     Timer {
         interval: duration * 1000
         onTriggered: {
@@ -132,22 +132,13 @@ Window {
 
                 Spacer {}
 
-                Button {
-                    background: Rectangle {
-                        anchors.fill: parent
-                        radius: 10
-                        color: "red"
-                        border.color: parent.pressed ? "white" : "transparent"
-                    }
-
+                NeosButton {
+                    color: "red"
                     Layout.rightMargin: 10
 
                     height: 40
                     width: 40
                     icon.source: "qrc:/close.png"
-                    //icon.height: 30
-                    //icon.width: 30
-                    icon.color: "white"
                     onClicked: {
                         quitDialog.open()
                     }
@@ -176,7 +167,7 @@ Window {
             NeosWaitingScreen {
                 id: loadingScreen
                 anchors.fill: parent
-                text: "Chargement de la page en cours..."
+                text: "Chargement de la charte en cours..."
             }
 
             Label {
