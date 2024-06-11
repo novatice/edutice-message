@@ -1,4 +1,6 @@
 QT += webengine
+QT += webenginewidgets
+QT += webchannel
 
 CONFIG += c++17 use_lld_linker
 

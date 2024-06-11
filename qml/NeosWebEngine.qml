@@ -1,74 +1,110 @@
 import QtQml 2.12
+import QtQuick 2.0
 import QtWebEngine 1.8
+import QtWebChannel 1.0
+//import "qrc:///qtwebchannel/qwebchannel.js"
 
-WebEngineView {
-    property string homeUrl: urlToLoad
-
+Item{
     width: parent.width
     height: parent.height
-
-    profile.httpCacheType: WebEngineProfile.NoCache
-    profile.persistentCookiesPolicy: WebEngineProfile.NoPersistentCookies
-    profile.offTheRecord: true
-    profile.persistentStoragePath: "null"
-    profile.httpAcceptLanguage: getLocaleAsAcceptLanguage()
-    id: webEngine
-
-    function goHome() {
-        url = homeUrl
+    WebChannel{
+        id:webChannel
     }
 
-    function getLocaleAsAcceptLanguage() {
-        const locale = Qt.locale()
-        return locale.name.replace("_", "-")
-    }
+    QtObject{
+        id: qtJSApi
+        objectName: "QtJSApi"
+        WebChannel.id: "QtJSApi"
 
-    onContextMenuRequested: function (request) {
-        request.accepted = true
-    }
-
-    onFullScreenRequested: function (request) {
-        request.accept()
-    }
-
-    onPrintRequested: function () {}
-
-    onFileDialogRequested: function (request) {
-        request.accepted = true
-        request.dialogReject()
-    }
-
-    onNewViewRequested: function (request) {
-        if (request.userInitiated) {
-            webEngine.url = request.requestedUrl
+        function quit(){
+            Qt.quit()
         }
     }
 
-    onNavigationRequested: function (request) {
-        var urlStr = request.url.toString()
-        console.log("trying to navigate to: ", urlStr)
-        // ignore mailto and other
-        if (!(urlStr.startsWith("http://") || urlStr.startsWith("https://"))) {
-            request.action = WebEngineNavigationRequest.IgnoreRequest
-        }
-    }
+    WebEngineView {
+        property string homeUrl: urlToLoad
 
-    onLoadingChanged: function (request) {
-        console.log("loading: ", request.url, request.errorCode)
-        if (request.status === WebEngineView.LoadFailedStatus) {
-            console.log("loading failed: ", request.errorCode, " ",
-                        request.errorString)
-            reloadingTimer.start()
-        }
-    }
+        width: parent.width
+        height: parent.height
 
-    Timer {
-        id: reloadingTimer
-        interval: 5000
-        onTriggered: function () {
-            webEngine.reloadAndBypassCache()
-        }
-    }
+        profile.httpCacheType: WebEngineProfile.NoCache
+        profile.persistentCookiesPolicy: WebEngineProfile.NoPersistentCookies
+        profile.offTheRecord: true
+        profile.persistentStoragePath: "null"
+        profile.httpAcceptLanguage: getLocaleAsAcceptLanguage()
+        id: webEngine
 
-    url: urlToLoad
+        webChannel: webChannel
+
+        function goHome() {
+            url = homeUrl
+        }
+
+        function getLocaleAsAcceptLanguage() {
+            const locale = Qt.locale()
+            return locale.name.replace("_", "-")
+        }
+
+        onContextMenuRequested: function (request) {
+            request.accepted = true
+        }
+
+        onFullScreenRequested: function (request) {
+            request.accept()
+        }
+
+        onPrintRequested: function () {}
+
+        onFileDialogRequested: function (request) {
+            request.accepted = true
+            request.dialogReject()
+        }
+
+        onNewViewRequested: function (request) {
+            if (request.userInitiated) {
+                webEngine.url = request.requestedUrl
+            }
+        }
+
+        onNavigationRequested: function (request) {
+            var urlStr = request.url.toString()
+            console.log("trying to navigate to: ", urlStr)
+            // ignore mailto and other
+            if (!(urlStr.startsWith("http://") || urlStr.startsWith("https://"))) {
+                request.action = WebEngineNavigationRequest.IgnoreRequest
+            }
+        }
+
+        onLoadingChanged: function (request) {
+            console.log("loading: ", request.url, request.errorCode)
+            if (request.status === WebEngineView.LoadFailedStatus) {
+                console.log("loading failed: ", request.errorCode, " ",
+                            request.errorString)
+                reloadingTimer.start()
+            }
+        }
+        onWindowCloseRequested: {
+            Qt.quit()
+        }
+
+        Timer {
+            id: reloadingTimer
+            interval: 5000
+            onTriggered: function () {
+                webEngine.reloadAndBypassCache()
+            }
+        }
+        userScripts: [
+                WebEngineScript {
+                    injectionPoint: WebEngineScript.DocumentCreation
+                    worldId: WebEngineScript.MainWorld
+                    name: "QWebChannel"
+                    sourceUrl: "qrc:///qtwebchannel/qwebchannel.js"
+                }]
+
+        url: urlToLoad
+    }
+    Component.onCompleted: {
+        webChannel.registerObject("qtJSAPI", qtJSApi);
+    }
 }
