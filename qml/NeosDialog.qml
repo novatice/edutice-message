@@ -16,7 +16,7 @@ Dialog {
     x: (parent.width - this.width) / 2
     y: parent.height / 2 - this.height / 2
 
-    width: parent.width / 4
+    implicitWidth: parent.width / 4
 
     id: root
     modal: true
@@ -30,17 +30,23 @@ Dialog {
         anchors.fill: parent
     }
 
-    header: Label {
-        text: root.title
-        horizontalAlignment: Qt.AlignHCenter
+    header: RowLayout {
+        width: parent.width
 
-        font: AvenirFonts.bold.deriveFont(38)
-        padding: 12
-        color: "#3b78bc"
+        Label {
+            Layout.maximumWidth: root.width
+            Layout.alignment: Qt.AlignHCenter
+
+            text: root.title
+            wrapMode: "WrapAtWordBoundaryOrAnywhere"
+
+            font: AvenirFonts.bold.deriveFont(38)
+            padding: 12
+            color: "#3b78bc"
+        }
     }
 
     contentItem: ColumnLayout {
-        width: parent.width
         height: parent.height
 
         id: column
@@ -48,20 +54,24 @@ Dialog {
 
         RowLayout {
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
+
+            height: implicitHeight
 
             Label {
                 id: contentLabel
                 Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter
+
                 font: AvenirFonts.regular.deriveFont(16)
                 wrapMode: "WordWrap"
-                horizontalAlignment: Qt.AlignCenter
+                horizontalAlignment: Qt.AlignHCenter
             }
         }
 
         RowLayout {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
+            height: implicitHeight
             spacing: 30
 
             NeosDialogButton {

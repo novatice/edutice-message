@@ -23,7 +23,7 @@ struct MessageModeOptions : Options {
 
 struct PolicyModeOptions : Options {
   QString user;
-  int policyId;
+  QString agreementId;
   int duration;
 };
 

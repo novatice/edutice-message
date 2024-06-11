@@ -11,15 +11,15 @@
 QString Agreement::asJson() {
   QJsonObject jsonObject;
   jsonObject.insert("agreed", this->success);
-  jsonObject.insert("policyId", this->policyId);
   jsonObject.insert("username", this->username);
+  jsonObject.insert("agreementId", this->agreementId);
 
   return QJsonDocument(jsonObject).toJson();
 }
 
-PolicyAgreement::PolicyAgreement(QString username, int policyId,
+PolicyAgreement::PolicyAgreement(QString username, QString agreementId,
                                  QObject *parent)
-    : QObject{parent}, m_policyId(policyId), m_username{username} {
+    : QObject{parent}, m_username{username}, m_agreementId{agreementId} {
 
   this->manager = new QNetworkAccessManager(this);
 
@@ -29,13 +29,13 @@ PolicyAgreement::PolicyAgreement(QString username, int policyId,
 void PolicyAgreement::agree() {
   // send request
   qDebug() << "agree";
-  this->sendAgreement(Agreement{true, this->m_policyId, this->m_username});
+  this->sendAgreement(Agreement{true, this->m_username, this->m_agreementId});
 }
 
 void PolicyAgreement::disagree() {
   // send request
   qDebug() << "disagree";
-  this->sendAgreement(Agreement{false, this->m_policyId, this->m_username});
+  this->sendAgreement(Agreement{false, this->m_username, this->m_agreementId});
 }
 
 void PolicyAgreement::sendAgreement(Agreement agreement) {

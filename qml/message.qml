@@ -12,9 +12,10 @@ Window {
     width: Screen.width
     height: Screen.height
     visible: true
-    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
+    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowMaximized
+    visibility: Qt.WindowMaximized
     Component.onCompleted: {
-
+        console.log(Screen.width, Screen.height)
     }
 
     Shortcut {

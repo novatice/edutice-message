@@ -1,6 +1,7 @@
 import QtQml 2.12
 import QtQuick 2.12
 import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
 import AvenirFonts 1.0
 
 Button {
@@ -15,11 +16,25 @@ Button {
         border.color: root.pressed ? "white" : "transparent"
     }
 
-    contentItem: Text {
-        text: root.text
-        font: AvenirFonts.bold.deriveFont(30)
-        padding: 5
-        color: "white"
+    contentItem: RowLayout {
+        width: root.width
+        height: root.height
+
+        Image {
+            source: icon.source
+            sourceSize.width: root.icon.width
+            sourceSize.height: root.icon.height
+        }
+
+        Text {
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+            text: root.text
+            font: AvenirFonts.bold.deriveFont(30)
+            padding: 5
+            color: "white"
+            visible: root.text
+        }
     }
 
     icon.color: disabled ? "gray" : "transparent"
