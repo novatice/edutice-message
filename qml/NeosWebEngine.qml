@@ -20,6 +20,7 @@ Item{
         }
     }
 
+
     WebEngineView {
         property string homeUrl: urlToLoad
 
@@ -104,6 +105,7 @@ Item{
 
         url: urlToLoad
     }
+    property alias webView: webEngine
     Component.onCompleted: {
         webChannel.registerObject("qtJSAPI", qtJSApi);
     }

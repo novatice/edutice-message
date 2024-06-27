@@ -154,7 +154,7 @@ Window {
                 id: webengine
                 anchors.fill: parent
 
-                onLoadingChanged: function (request) {
+                webView.onLoadingChanged: function (request) {
                     if (request.status === WebEngineView.LoadSucceededStatus) {
                         loadingScreen.visible = false
                         reloadingLabel.visible = false
