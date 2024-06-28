@@ -70,7 +70,7 @@ Item{
             var urlStr = request.url.toString()
             console.log("trying to navigate to: ", urlStr)
             // ignore mailto and other
-            if (!(urlStr.startsWith("http://") || urlStr.startsWith("https://") || urlStr.startsWith("file://") || urlStr.startsWith("qrc:/") )) {
+            if (!(urlStr.startsWith("http://") || urlStr.startsWith("https://") || urlStr.startsWith("file://"))) {
                 console.log("NavigationRequest blocked")
                 request.action = WebEngineNavigationRequest.IgnoreRequest
             }
