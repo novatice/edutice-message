@@ -7,13 +7,13 @@
 #include "qqmlapplicationengine.h"
 #include "qqmlcontext.h"
 #include "qquickwindow.h"
-#include "qtwebengineglobal.h"
+#include "QtWebEngineQuick"
 
 template <class T> class Application {
 public:
   explicit Application(QGuiApplication &app, QString qmlFile, T options)
       : m_app(app) {
-    QtWebEngine::initialize();
+    QtWebEngineQuick::initialize();
 
     // const QString qmlFile = getQmlFileFor(options->mode);
     m_qmlUrl = QUrl(qmlFile);

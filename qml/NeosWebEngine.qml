@@ -1,7 +1,7 @@
-import QtQml 2.12
-import QtQuick 2.0
-import QtWebEngine 1.8
-import QtWebChannel 1.0
+import QtQml
+import QtQuick
+import QtWebEngine
+import QtWebChannel
 
 Item{
     width: parent.width
@@ -35,7 +35,6 @@ Item{
         id: webEngine
 
         webChannel: webChannel
-
         function goHome() {
             url = homeUrl
         }
@@ -60,7 +59,7 @@ Item{
             request.dialogReject()
         }
 
-        onNewViewRequested: function (request) {
+        onNewWindowRequested: function (request) {
             if (request.userInitiated) {
                 webEngine.url = request.requestedUrl
             }
@@ -69,6 +68,12 @@ Item{
         onNavigationRequested: function (request) {
             var urlStr = request.url.toString()
             console.log("trying to navigate to: ", urlStr)
+            var apiScript = { name: "QWebChannel",
+                sourceUrl: "qrc:///qtwebchannel/qwebchannel.js",
+                injectionPoint: WebEngineScript.DocumentCreation,
+                worldId: WebEngineScript.MainWorld
+            }
+            webEngine.userScripts.collection = [apiScript]
             // ignore mailto and other
             if (!(urlStr.startsWith("http://") || urlStr.startsWith("https://") || urlStr.startsWith("file://"))) {
                 console.log("NavigationRequest blocked")
@@ -95,15 +100,7 @@ Item{
                 webEngine.reloadAndBypassCache()
             }
         }
-        userScripts: [
-                WebEngineScript {
-                    injectionPoint: WebEngineScript.DocumentCreation
-                    worldId: WebEngineScript.MainWorld
-                    name: "QWebChannel"
-                    sourceUrl: "qrc:///qtwebchannel/qwebchannel.js"
-                }]
-
-        url: urlToLoad
+       url: urlToLoad
     }
     property alias webView: webEngine
     Component.onCompleted: {

@@ -1,7 +1,7 @@
-import QtQml 2.12
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
+import QtQml
+import QtQuick
+import QtQuick.Controls.Basic
+import QtQuick.Layouts
 import AvenirFonts 1.0
 
 Button {
@@ -56,11 +56,11 @@ Button {
             }
         }
 
-        onPressed: {
+        onPressed: (mouse) =>{
             mouse.accepted = root.disabled
         }
 
-        onClicked: {
+        onClicked: (mouse) => {
             mouse.accepted = root.disabled
         }
     }

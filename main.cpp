@@ -5,7 +5,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QScreen>
-#include <QtWebEngine/QtWebEngine>
+#include <QtWebEngineQuick/QtWebEngineQuick>
 #include <iostream>
 
 void treatParsingResult(QCommandLineParser &parser,
