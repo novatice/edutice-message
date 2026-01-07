@@ -1,8 +1,52 @@
 #include "options.h"
 #include "qcommandlineoption.h"
 #include "qcommandlineparser.h"
+#include "qurl.h"
 #include <iostream>
 #include <memory>
+#include <windows.h>
+
+const static std::wstring g_serviceSubkey{L"SOFTWARE\\Novatice\\Edutice\\Service"};
+
+QString GetStringFromReg(HKEY hKey, std::wstring path, std::wstring value)
+{
+    DWORD dataSize;
+    LONG retCode = RegGetValueW(hKey,
+                                path.c_str(),
+                                value.c_str(),
+                                RRF_RT_REG_SZ,
+                                nullptr,
+                                nullptr,
+                                &dataSize);
+    if (retCode != ERROR_SUCCESS) {
+        qWarning("Coulndn't get REG_SZ value %s from Registry :: error = %s",
+                 value.c_str(),
+                 qUtf8Printable(std::to_string(retCode).c_str()));
+        return NULL;
+    }
+    std::wstring data;
+    data.resize(dataSize / sizeof(wchar_t));
+
+    retCode = RegGetValueW(hKey,
+                           path.c_str(),
+                           value.c_str(),
+                           RRF_RT_REG_SZ,
+                           nullptr,
+                           &data[0],
+                           &dataSize);
+    //we need to do something to be able to log value
+    if (retCode != ERROR_SUCCESS) {
+        qWarning("Coulndn't get REG_SZ value %s from Registry :: error = %s",
+                 value.c_str(),
+                 qUtf8Printable(std::to_string(retCode).c_str()));
+        return NULL;
+    }
+
+    // resizing data from byte to wchar and remove double NULL termination
+    data.resize(dataSize / sizeof(wchar_t) - 1);
+
+    return QString::fromWCharArray(data.c_str());
+}
 
 CommandLineParseResult parseMessageModeOptions(QCommandLineParser &parser,
                                                MessageModeOptions *options,
@@ -33,6 +77,13 @@ CommandLineParseResult parseMessageModeOptions(QCommandLineParser &parser,
     return CommandLineError;
   }
 
+  QString serverHostname = GetStringFromReg(HKEY_LOCAL_MACHINE, g_serviceSubkey, L"ServerHostname");
+  QUrl urlArg = QUrl(argsList.at(0));
+  qDebug("url host", urlArg.host().toStdString().c_str());
+  if (serverHostname.isNull() || urlArg.host() != serverHostname) {
+      qInfo("Url not from server, stopping application");
+      return CommandLineError;
+  }
   options->url = argsList.at(0);
   options->withoutCloseButton = withoutCloseBtn;
 
@@ -69,6 +120,14 @@ CommandLineParseResult parsePolicyModeOptions(QCommandLineParser &parser,
     return CommandLineError;
   }
 
+  QString serverHostname = GetStringFromReg(HKEY_LOCAL_MACHINE, g_serviceSubkey, L"ServerHostname");
+  QUrl urlArg = QUrl(argsList.at(0));
+  qDebug("url host", urlArg.host().toStdString().c_str());
+  if (serverHostname.isNull() || urlArg.host() != serverHostname) {
+      qInfo("Url not from server, stopping application");
+      return CommandLineError;
+  }
+
   options->url = argsList.at(0);
 
   if (!parser.isSet(userOpt)) {
@@ -89,3 +148,4 @@ CommandLineParseResult parsePolicyModeOptions(QCommandLineParser &parser,
 
   return CommandLineOk;
 }
+

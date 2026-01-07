@@ -19,7 +19,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 _QML_IMPORT_PATHS = "qml/"
 
 QML_IMPORT_PATH += $$_QML_IMPORT_PATHS
-
+win32:LIBS += -ladvapi32
 
 SOURCES += \
     main.cpp \

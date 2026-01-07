@@ -3,27 +3,27 @@ import QtQuick
 import QtWebEngine
 import QtWebChannel
 
-Item{
+Item {
+
     width: parent.width
     height: parent.height
-    WebChannel{
-        id:webChannel
+    WebChannel {
+        id: webChannel
     }
 
-    QtObject{
+    QtObject {
         id: qtJSApi
         objectName: "QtJSApi"
         WebChannel.id: "QtJSApi"
 
-        function quit(){
+        function quit() {
             Qt.quit()
         }
     }
 
-
     WebEngineView {
         property string homeUrl: urlToLoad
-
+        property var authorizedHostnames: [new URL(urlToLoad).hostname]
         width: parent.width
         height: parent.height
 
@@ -68,16 +68,40 @@ Item{
         onNavigationRequested: function (request) {
             var urlStr = request.url.toString()
             console.log("trying to navigate to: ", urlStr)
-            var apiScript = { name: "QWebChannel",
-                sourceUrl: "qrc:///qtwebchannel/qwebchannel.js",
-                injectionPoint: WebEngineScript.DocumentCreation,
-                worldId: WebEngineScript.MainWorld
+            var apiScript = {
+                "name": "QWebChannel",
+                "sourceUrl": "qrc:///qtwebchannel/qwebchannel.js",
+                "injectionPoint": WebEngineScript.DocumentCreation,
+                "worldId": WebEngineScript.MainWorld
             }
+            var urlUrl = new URL(request.url)
+            if (request.navigationType === WebEngineNavigationRequest.RedirectNavigation) {
+                console.log("Redirect: ", urlUrl.hostname)
+                if (!authorizedHostnames.some(
+                            hostname => hostname === urlUrl.hostname)) {
+                    console.log("Domain not in authorizedUrls adding it")
+                    authorizedHostnames.push(urlUrl.hostname)
+                    var urlsStr = ""
+                    authorizedHostnames.forEach(
+                                element => urlsStr += element + "\n")
+                    console.log("new array\n", urlsStr)
+                }
+            } else {
+                if (authorizedHostnames.some(
+                            hostname => hostname === urlUrl.hostname)) {
+                    request.accept()
+                } else {
+                    console.log("Domain not authorized rejecting")
+                    request.reject()
+                }
+            }
+
             webEngine.userScripts.collection = [apiScript]
             // ignore mailto and other
-            if (!(urlStr.startsWith("http://") || urlStr.startsWith("https://") || urlStr.startsWith("file://"))) {
+            if (!(urlStr.startsWith("http://") || urlStr.startsWith("https://")
+                  || urlStr.startsWith("file://"))) {
                 console.log("NavigationRequest blocked")
-                request.action = WebEngineNavigationRequest.IgnoreRequest
+                request.reject()
             }
         }
 
@@ -100,10 +124,10 @@ Item{
                 webEngine.reloadAndBypassCache()
             }
         }
-       url: urlToLoad
+        url: urlToLoad
     }
     property alias webView: webEngine
     Component.onCompleted: {
-        webChannel.registerObject("qtJSAPI", qtJSApi);
+        webChannel.registerObject("qtJSAPI", qtJSApi)
     }
 }
