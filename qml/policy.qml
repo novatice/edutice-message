@@ -182,7 +182,7 @@ Window {
                     color: "#F89345"
                 }
 
-                text: "Une errerur est survenue, rechargement dans 10 secondes"
+                text: "Une erreur est survenue, rechargement dans 10 secondes"
                 horizontalAlignment: Qt.AlignHCenter
                 color: "white"
                 font: AvenirFonts.regular.deriveFont(24)
