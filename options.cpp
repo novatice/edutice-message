@@ -77,14 +77,21 @@ CommandLineParseResult parseMessageModeOptions(QCommandLineParser &parser,
     return CommandLineError;
   }
 
-  QString serverHostname = GetStringFromReg(HKEY_LOCAL_MACHINE, g_serviceSubkey, L"ServerHostname");
-  QUrl urlArg = QUrl(argsList.at(0));
-  qDebug("url host", urlArg.host().toStdString().c_str());
-  if (serverHostname.isNull() || urlArg.host() != serverHostname) {
-      qInfo("Url not from server, stopping application");
-      return CommandLineError;
+  QString ArgStr = argsList.at(0);
+
+  if (ArgStr.startsWith("http") || ArgStr.startsWith("https")) {
+      QString serverHostname = GetStringFromReg(HKEY_LOCAL_MACHINE,
+                                                g_serviceSubkey,
+                                                L"ServerHostname");
+      QUrl urlArg = QUrl(ArgStr);
+      qDebug("url host", urlArg.host().toStdString().c_str());
+      if (serverHostname.isNull() || urlArg.host() != serverHostname) {
+          qInfo("Url not from server, stopping application");
+          return CommandLineError;
+      }
   }
-  options->url = argsList.at(0);
+
+  options->url = ArgStr;
   options->withoutCloseButton = withoutCloseBtn;
 
   return CommandLineOk;
@@ -97,9 +104,10 @@ CommandLineParseResult parsePolicyModeOptions(QCommandLineParser &parser,
   parser.addOption(userOpt);
 
   QCommandLineOption durationOpt("duration",
-                                 "The numbr of seconds during which the policy "
+                                 "The number of seconds during which the policy "
                                  "can be accepted (default is 600)",
-                                 "duration", "600");
+                                 "duration",
+                                 "600");
   parser.addOption(durationOpt);
 
   QCommandLineOption agreementIdOpt("agreementId", "The agreement id",
