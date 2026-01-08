@@ -92,6 +92,7 @@ Item {
                     request.accept()
                 } else {
                     console.log("Domain not authorized rejecting")
+                    forbiddenLinkDialog.open()
                     request.reject()
                 }
             }
@@ -125,6 +126,16 @@ Item {
             }
         }
         url: urlToLoad
+
+        NeosDialog {
+            id: forbiddenLinkDialog
+            title: "Lien non autorisé"
+            text: "Vous n'êtes pas autorisé à accéder à ce lien"
+
+            onAccepted: {
+                this.close()
+            }
+        }
     }
     property alias webView: webEngine
     Component.onCompleted: {
