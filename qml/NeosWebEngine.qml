@@ -92,7 +92,10 @@ Item {
                     request.accept()
                 } else {
                     console.log("Domain not authorized rejecting")
-                    forbiddenLinkDialog.open()
+                    if (request.navigationType
+                            === WebEngineNavigationRequest.LinkClickedNavigation) {
+                        forbiddenLinkDialog.open()
+                    }
                     request.reject()
                 }
             }
