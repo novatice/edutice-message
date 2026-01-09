@@ -2,11 +2,9 @@
 #include "qcommandlineoption.h"
 #include "qcommandlineparser.h"
 #include "qurl.h"
-#include <iostream>
-#include <memory>
 #include <windows.h>
 
-const static std::wstring g_serviceSubkey{L"SOFTWARE\\Novatice\\Edutice\\Service"};
+const static std::wstring g_eduticeSubkey{L"SOFTWARE\\Novatice\\Edutice"};
 
 QString GetStringFromReg(HKEY hKey, std::wstring path, std::wstring value)
 {
@@ -48,6 +46,24 @@ QString GetStringFromReg(HKEY hKey, std::wstring path, std::wstring value)
     return QString::fromWCharArray(data.c_str());
 }
 
+bool CheckUrlIsNeosServer(QString arg)
+{
+    if (arg.startsWith("http") || arg.startsWith("https")) {
+        QString serverHostname = GetStringFromReg(HKEY_LOCAL_MACHINE,
+                                                  g_eduticeSubkey,
+                                                  L"ServerHostname");
+        QUrl urlArg = QUrl(arg);
+        qDebug(urlArg.host().toStdString().c_str());
+        if (serverHostname.isNull() || urlArg.host() != serverHostname) {
+            qInfo("Url not from server, stopping application");
+            return false;
+        } else {
+            return true;
+        }
+    }
+    return true;
+}
+
 CommandLineParseResult parseMessageModeOptions(QCommandLineParser &parser,
                                                MessageModeOptions *options,
                                                QString *errorMessage) {
@@ -77,21 +93,10 @@ CommandLineParseResult parseMessageModeOptions(QCommandLineParser &parser,
     return CommandLineError;
   }
 
-  QString ArgStr = argsList.at(0);
-
-  if (ArgStr.startsWith("http") || ArgStr.startsWith("https")) {
-      QString serverHostname = GetStringFromReg(HKEY_LOCAL_MACHINE,
-                                                g_serviceSubkey,
-                                                L"ServerHostname");
-      QUrl urlArg = QUrl(ArgStr);
-      qDebug("url host", urlArg.host().toStdString().c_str());
-      if (serverHostname.isNull() || urlArg.host() != serverHostname) {
-          qInfo("Url not from server, stopping application");
-          return CommandLineError;
-      }
+  if (!CheckUrlIsNeosServer(argsList.at(0))) {
+      return CommandLineError;
   }
-
-  options->url = ArgStr;
+  options->url = argsList.at(0);
   options->withoutCloseButton = withoutCloseBtn;
 
   return CommandLineOk;
@@ -128,14 +133,9 @@ CommandLineParseResult parsePolicyModeOptions(QCommandLineParser &parser,
     return CommandLineError;
   }
 
-  QString serverHostname = GetStringFromReg(HKEY_LOCAL_MACHINE, g_serviceSubkey, L"ServerHostname");
-  QUrl urlArg = QUrl(argsList.at(0));
-  qDebug("url host", urlArg.host().toStdString().c_str());
-  if (serverHostname.isNull() || urlArg.host() != serverHostname) {
-      qInfo("Url not from server, stopping application");
+  if (!CheckUrlIsNeosServer(argsList.at(0))) {
       return CommandLineError;
   }
-
   options->url = argsList.at(0);
 
   if (!parser.isSet(userOpt)) {
