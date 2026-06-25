@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/AvenirFonts/AvenirFont.qml</file>
+        <file>qml/AvenirFonts/AvenirFonts.qml</file>
+        <file>qml/AvenirFonts/qmldir</file>
+        <file>qml/NeosButton.qml</file>
+        <file>qml/message.qml</file>
+        <file>qml/Spacer.qml</file>
+        <file>fonts/avenir_next_lt_pro_it.otf</file>
+        <file>fonts/avenir_next_lt_pro_regular.otf</file>
+        <file>fonts/avenir_next_lt_pro_bold.otf</file>
+        <file>qml/policy.qml</file>
+        <file>close.png</file>
+        <file>qml/NeosDialog.qml</file>
+        <file>qml/NeosDialogButton.qml</file>
+        <file>qml/NeosBusyIndicator.qml</file>
+        <file>qml/NeosWebEngine.qml</file>
+        <file>qml/NeosWaitingScreen.qml</file>
+    </qresource>
+</RCC>
