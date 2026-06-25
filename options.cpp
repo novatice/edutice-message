@@ -3,6 +3,11 @@
 #include "qcommandlineparser.h"
 #include "qurl.h"
 
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QFile>
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -58,8 +63,27 @@ bool CheckUrlIsNeosServer(QString arg)
                                                   g_eduticeSubkey,
                                                   L"ServerHostname");
 #else
-        QString serverHostname = QString(qgetenv("NEOS_SERVER"));
-        qDebug() <<" server hostname" << serverHostname;
+        QString configPath = "/etc/neos/config.json";
+
+        QFile file(configPath);
+
+        if (!file.open(QIODevice::ReadOnly)) {
+            qWarning() << "Could not open config file (" << configPath <<")";
+            return false;
+        }
+
+        QByteArray data = file.readAll();
+        file.close();
+
+        QJsonParseError parseError;
+        QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
+        if (parseError.error != QJsonParseError::NoError) {
+            return false;
+        }
+
+        QJsonObject object =doc.object();
+        QString serverHostname = object["neosServer"].toString();
+
 #endif
         QUrl urlArg = QUrl(arg);
         qDebug() << urlArg.host().toStdString().c_str();
