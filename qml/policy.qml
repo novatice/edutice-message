@@ -7,6 +7,7 @@ import QtQuick.Controls.Universal
 import QtQml
 import QtWebEngine
 import AvenirFonts 1.0
+import Theme 1.0
 
 Window {
     width: Screen.width
@@ -133,9 +134,12 @@ Window {
                 Spacer {}
 
                 NeosButton {
+                    id: quitButton
                     color: "red"
                     Layout.rightMargin: 10
 
+                    KeyNavigation.down: denyButton
+                    KeyNavigation.right: denyButton
                     height: 40
                     width: 40
                     icon.source: "qrc:/close.png"
@@ -153,6 +157,7 @@ Window {
             NeosWebEngine {
                 id: webengine
                 anchors.fill: parent
+                focusPolicy: "NoFocus"
 
                 webView.onLoadingChanged: function (request) {
                     if (request.status === WebEngineView.LoadSucceededStatus) {
@@ -179,7 +184,7 @@ Window {
 
                 background: Rectangle {
                     anchors.fill: parent
-                    color: "#F89345"
+                    color: Theme.warningColor
                 }
 
                 text: "Une erreur est survenue, rechargement dans 10 secondes"
@@ -191,7 +196,7 @@ Window {
 
         Item {
             Layout.fillWidth: true
-            height: 60
+            Layout.preferredHeight: 60
 
             Rectangle {
                 color: "whitesmoke"
@@ -205,7 +210,14 @@ Window {
                 Spacer {}
 
                 NeosButton {
+                    Layout.preferredHeight: 56
+                    id: denyButton
+                    KeyNavigation.up: quitButton
+                    KeyNavigation.right: acceptButton
+                    focus: true
                     text: "Refuser"
+                    secondary: true
+                    font: AvenirFonts.regular.deriveFont(30)
                     disabled: webengine.loading || policyAgreement.isRunning
                     onClicked: {
                         disagreeDialog.open()
@@ -213,8 +225,13 @@ Window {
                 }
 
                 NeosButton {
+                    id: acceptButton
+
+                    KeyNavigation.up: quitButton
+                    KeyNavigation.left: denyButton
+                    font: AvenirFonts.regular.deriveFont(30)
+                    Layout.preferredHeight: 56
                     Layout.rightMargin: 10
-                    color: "green"
                     text: "Accepter"
                     disabled: webengine.loading || policyAgreement.isRunning
                     onClicked: {

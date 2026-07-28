@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import AvenirFonts 1.0
+import Theme 1.0
 
 Item {
 
@@ -9,9 +10,22 @@ Item {
 
     property alias text: label.text
 
+    /*
+      if we want to apply new graphical chart
+gradient: Gradient{
+            orientation: Gradient.Vertical
+            GradientStop {position:0.0; color: "#B2C8F7"}
+            GradientStop {position:0.6; color: "#B2C8F7"}
+            GradientStop {position:1.0; color: Theme.primaryTextColor}
+    }*/
+
     Rectangle {
         anchors.fill: parent
-        color: "#3b78bc"
+        gradient: Gradient{
+            orientation: Gradient.Horizontal
+            GradientStop {position:0.0; color: Theme.primaryColor}
+            GradientStop {position:1.0; color: Theme.secondaryColor}
+        }
     }
 
     ColumnLayout {
@@ -22,7 +36,7 @@ Item {
             Layout.alignment: Qt.AlignHCenter
             id: label
             font: AvenirFonts.regular.deriveFont(30)
-            color: "white"
+            color: Theme.primaryTextColor
         }
 
         BusyIndicator {
@@ -31,7 +45,7 @@ Item {
 
             Component.onCompleted: {
                 this.contentItem.pen = "transparent"
-                this.contentItem.fill = "white"
+                this.contentItem.fill = Theme.primaryTextColor
             }
         }
     }

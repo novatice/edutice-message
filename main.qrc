@@ -16,5 +16,7 @@
         <file>qml/NeosBusyIndicator.qml</file>
         <file>qml/NeosWebEngine.qml</file>
         <file>qml/NeosWaitingScreen.qml</file>
+        <file>qml/Theme/NeosTheme.qml</file>
+        <file>qml/Theme/qmldir</file>
     </qresource>
 </RCC>
