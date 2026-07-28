@@ -2,10 +2,18 @@
 #include "qcommandlineoption.h"
 #include "qcommandlineparser.h"
 #include "qurl.h"
-#include <windows.h>
 
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QFile>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
 const static std::wstring g_eduticeSubkey{L"SOFTWARE\\Novatice\\Edutice"};
 
+#ifdef _WIN32
 QString GetStringFromReg(HKEY hKey, std::wstring path, std::wstring value)
 {
     DWORD dataSize;
@@ -45,15 +53,40 @@ QString GetStringFromReg(HKEY hKey, std::wstring path, std::wstring value)
 
     return QString::fromWCharArray(data.c_str());
 }
+#endif
 
 bool CheckUrlIsNeosServer(QString arg)
 {
     if (arg.startsWith("http") || arg.startsWith("https")) {
+#ifdef _WIN32
         QString serverHostname = GetStringFromReg(HKEY_LOCAL_MACHINE,
                                                   g_eduticeSubkey,
                                                   L"ServerHostname");
+#else
+        QString configPath = "/etc/neos/config.json";
+
+        QFile file(configPath);
+
+        if (!file.open(QIODevice::ReadOnly)) {
+            qWarning() << "Could not open config file (" << configPath <<")";
+            return false;
+        }
+
+        QByteArray data = file.readAll();
+        file.close();
+
+        QJsonParseError parseError;
+        QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
+        if (parseError.error != QJsonParseError::NoError) {
+            return false;
+        }
+
+        QJsonObject object =doc.object();
+        QString serverHostname = object["neosServer"].toString();
+
+#endif
         QUrl urlArg = QUrl(arg);
-        qDebug(urlArg.host().toStdString().c_str());
+        qDebug() << urlArg.host().toStdString().c_str();
         if (serverHostname.isNull() || urlArg.host() != serverHostname) {
             qInfo("Url not from server, stopping application");
             return false;
