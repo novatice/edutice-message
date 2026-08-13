@@ -157,7 +157,6 @@ Window {
             NeosWebEngine {
                 id: webengine
                 anchors.fill: parent
-                focusPolicy: "NoFocus"
 
                 webView.onLoadingChanged: function (request) {
                     if (request.status === WebEngineView.LoadSucceededStatus) {
