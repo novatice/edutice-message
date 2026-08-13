@@ -31,6 +31,7 @@ public:
           QQuickWindow *window =
               qobject_cast<QQuickWindow *>(m_engine.rootObjects().at(0));
           window->showFullScreen();
+          window->setFlag(Qt::Window);
         },
         Qt::QueuedConnection);
   };
