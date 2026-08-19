@@ -33,6 +33,7 @@ Item {
         profile.persistentStoragePath: "null"
         profile.httpAcceptLanguage: getLocaleAsAcceptLanguage()
         id: webEngine
+        activeFocusOnTab: false
 
         webChannel: webChannel
         function goHome() {

@@ -38,7 +38,38 @@ Window {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            NeosWebEngine {}
+            NeosWebEngine {
+                webView.onLoadingChanged: function (request) {
+                    if (request.status === WebEngineView.LoadSucceededStatus) {
+                        loadingScreen.visible = false
+                        reloadingLabel.visible = false
+                    } else if (request.status === WebEngineView.LoadFailedStatus) {
+                        reloadingLabel.visible = true
+                    }
+                }
+            }
+            NeosWaitingScreen{
+                id: loadingScreen
+                anchors.fill: parent
+                text: "Chargement du message en cours..."
+            }
+            Label {
+                id: reloadingLabel
+                anchors.bottom: parent.bottom
+                visible: false
+
+                width: parent.width
+
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: Theme.warningColor
+                }
+
+                text: "Une erreur est survenue, rechargement dans 10 secondes"
+                horizontalAlignment: Qt.AlignHCenter
+                color: "white"
+                font: AvenirFonts.regular.deriveFont(24)
+            }
         }
 
         Item {

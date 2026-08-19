@@ -5,6 +5,7 @@ import QtQuick.Controls.Basic
 import QtQuick.Layouts
 
 import AvenirFonts 1.0
+import Theme 1.0
 
 Dialog {
     property alias text: contentLabel.text
@@ -42,7 +43,7 @@ Dialog {
 
             font: AvenirFonts.bold.deriveFont(38)
             padding: 12
-            color: "#3b78bc"
+            color: Theme.primaryColor
         }
     }
 
@@ -76,12 +77,16 @@ Dialog {
 
             NeosDialogButton {
                 id: cancelBtn
+                secondary: true
                 text: "Annuler"
                 onClicked: {
                     root.canceled()
                     close()
                 }
                 visible: withCancelButton
+                focus: withCancelButton
+
+                KeyNavigation.right: acceptBtn
             }
 
             NeosDialogButton {
@@ -91,6 +96,8 @@ Dialog {
                     root.accepted()
                     close()
                 }
+                focus: !withCancelButton
+                KeyNavigation.left: withCancelButton ? cancelBtn : acceptBtn
             }
         }
     }
