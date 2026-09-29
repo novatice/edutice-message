@@ -7,6 +7,8 @@ import QtQuick.Controls.Universal
 import QtQml
 import QtWebEngine
 import AvenirFonts 1.0
+import Theme 1.0
+
 
 Window {
     width: Screen.width
