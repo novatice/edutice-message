@@ -47,7 +47,7 @@ Window {
     NeosDialog {
         id: agreeErrorDialog
         title: "Charte d'utilisation"
-        text: "Une erreur est survenue lors de l'enregistrement de votre choix, veuilllez réessayer"
+        text: "Une erreur est survenue lors de l'enregistrement de votre choix, veuillez réessayer."
 
         onAccepted: {
             this.close()
@@ -58,7 +58,7 @@ Window {
         id: disagreeDialog
         title: "Charte d'utilisation"
         withCancelButton: true
-        text: "En refusant la charte d'utilisation vous ne pourrez pas ouvrir votre session et vous serez redirigé vers l'écran de connexion.\n\n Souhaitez-vous vraiment refuser la charte d'utilisation ?"
+        text: "En refusant la charte d'utilisation, vous ne pourrez pas ouvrir votre session et vous serez redirigé vers l'écran de connexion.\n\nSouhaitez-vous vraiment refuser la charte d'utilisation ?"
 
         acceptText: "Refuser"
 
@@ -76,7 +76,7 @@ Window {
         id: quitDialog
         title: "Charte d'utilisation"
         withCancelButton: true
-        text: "Souhaitez vous quitter la charte d'utilisation ? \n\n Vous serez redirigé vers l'écran de connexion"
+        text: "Souhaitez-vous quitter la charte d'utilisation ?\n\nVous serez redirigé vers l'écran de connexion."
 
         acceptText: "Quitter"
 
